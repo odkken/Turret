@@ -16,5 +16,11 @@ public:
 	{
 		obj.setOrigin(obj.getGlobalBounds().left+obj.getGlobalBounds().width/2, obj.getGlobalBounds().top+obj.getGlobalBounds().height/2);
 	}
+
+	template<typename T>
+	static T Min(T& val1, T& val2)
+	{
+		return (val1<val2)? val1 : val2;
+	}
 };
 

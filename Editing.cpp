@@ -62,8 +62,7 @@ void Editing::HandleEvents()
 	if(someEvent.type==sf::Event::KeyPressed && someEvent.key.code==sf::Keyboard::D)
 		Game::Instance()->debug=!Game::Instance()->debug;
 
-	if(resetButton.HandleEvents(someEvent) || saveButton.HandleEvents(someEvent))
-		mouseObject.Show(false);
-	else
-		mouseObject.Show(true);
+	resetButton.HandleEvents(someEvent);
+	saveButton.HandleEvents(someEvent);
+		
 }

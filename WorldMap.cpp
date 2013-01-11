@@ -1,16 +1,19 @@
 #include "stdafx.h"
 #include "WorldMap.h"
 #include <fstream>
+#include "MyAlgorithms.h"
 
 WorldMap::WorldMap() : MAP_SIZE(20,20)
 {
 	for (int row=0; row<MAP_SIZE.y; ++row)
 	{
+		std::vector<std::pair<sf::Vector2f, MapObject> > rowVec;
 		for (int col=0; col<MAP_SIZE.x; ++col)
 		{
-			mapGrid.emplace_back(sf::Vector2f(MapObject::OBJECT_SIZE.x*(col + .5f), MapObject::OBJECT_SIZE.y*(row + .5f)), MapObject(MapObject::ObjectType::wall));
-			mapGrid[row][col].second.SetPosition(mapGrid[row][col].first);
+			rowVec.emplace_back(sf::Vector2f(MapObject::OBJECT_SIZE.x*(col + .5f), MapObject::OBJECT_SIZE.y*(row + .5f)), MapObject(MapObject::ObjectType::wall));
+			rowVec[col].second.SetPosition(rowVec[col].first);
 		}
+		mapGrid.push_back(rowVec);
 	}
 }
 
@@ -78,7 +81,9 @@ const sf::Vector2f& WorldMap::GetLocation(int row, int col)
 
 const sf::Vector2i WorldMap::GetIndex(const sf::Vector2f& location)
 {
-	return sf::Vector2i(location.y/MapObject::OBJECT_SIZE.y - 1/2, location.x/MapObject::OBJECT_SIZE.x - 1/2);
+	int x = location.x/MapObject::OBJECT_SIZE.x - 1/2;
+	int y = location.y/MapObject::OBJECT_SIZE.y - 1/2;
+	return sf::Vector2i((x > MAP_SIZE.x - 1) ? MAP_SIZE.x - 1 : x ,(y > MAP_SIZE.y - 1) ? MAP_SIZE.y - 1 : y);
 }
 
 void WorldMap::Reset()

@@ -26,6 +26,8 @@ public:
 	const sf::Vector2f& ClosestNode(const sf::Vector2f& pos);
 
 private:
+
+	//this is accessed as mapgrid[row][col], which means mapgrid[y][x] is typical
 	std::vector<std::vector<std::pair< sf::Vector2f, MapObject > > > mapGrid;
 	int FindIndex(const sf::Vector2f& location);
 };
