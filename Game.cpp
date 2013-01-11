@@ -43,8 +43,8 @@ void Game::Draw()
 
 void Game::Loop()
 {
-	
-	//mainWindow_.display();
+
+	//add lines to the static debugger every time (since they get overridden each loop)... probably a faster way to implement the debugger but this works for now.
 	while(mainWindow_.isOpen())
 	{
 		Debugger::Instance()->AddLine("Draw: " + std::to_string(gameClock.restart().asMicroseconds()));

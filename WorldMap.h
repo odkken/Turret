@@ -12,8 +12,12 @@ public:
 	bool HandleEvents(const sf::Event& someEvent);
 	void Draw();
 	void Show(bool b);
-
+	void Load(const std::string& fileName);
 	void Save();
+
+	MapObject::ObjectType GetType(int row, int col);
+	const sf::Vector2f& GetLocation(int row, int col);
+	const sf::Vector2i GetIndex(const sf::Vector2f& location);
 
 	void Click(MapObject& obj);
 	
@@ -22,7 +26,7 @@ public:
 	const sf::Vector2f& ClosestNode(const sf::Vector2f& pos);
 
 private:
-	std::vector<std::pair< sf::Vector2f, MapObject > > mapGrid;
+	std::vector<std::vector<std::pair< sf::Vector2f, MapObject > > > mapGrid;
 	int FindIndex(const sf::Vector2f& location);
 };
 

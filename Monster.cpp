@@ -1,21 +1,54 @@
 #include "stdafx.h"
 #include "Monster.h"
-#include "MyAlgorithms.h"
-
-Monster::Monster(int level, bool boss)
+#include "PublicMap.h"
+//every 5 levels the speed increases, other stuff is guesswork for now
+Monster::Monster(int level) : attackable(false), isShowing(false), HP(100+5*level*level), speed(level/5), armor((level>5) ? level-5 : 0), lastPos(0,0), monsterShape(10)
 {
-	font.loadFromFile("fonts/segoesc.ttf");
-	text.setFont(font);
-	text.setString("Level " + std::to_string(level) + (boss ? "Boss" : "Scrub"));
-	MyAlgorithms::CenterOrigin(text);
+	monsterShape.setFillColor(sf::Color::Red);
+	monsterShape.setOutlineColor(sf::Color::White);
+	monsterShape.setOutlineThickness(armor);
 }
 
-void Monster::SetPosition(const float& x, const float& y)
+//does not check if it's a valid spawn, left to Playing class!
+void Monster::Spawn(int row, int col)
 {
-	text.setPosition(x,y);
+	monsterShape.setPosition(PublicMap::Instance()->GetLocation(row, col));
+	isShowing=true;
+	attackable=true;
 }
 
-sf::Text& Monster::GetImage()
+
+void Monster::Update()
 {
-	return text;
+
 }
+
+void Monster::Show(bool b)
+{
+	isShowing=b;
+}
+
+bool Monster::Kill(int dmg)
+{
+	HP-= (dmg-armor);
+	
+	if(HP<=0)
+	{
+		Die();
+		return true;
+	}
+	return false;
+}
+
+void Monster::Die()
+{
+	isShowing=false;
+	attackable=false;
+}
+
+void Monster::Draw()
+{
+	if(isShowing)
+	Game::Instance()->mainWindow_.draw(monsterShape);
+}
+

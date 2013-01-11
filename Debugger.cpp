@@ -27,5 +27,5 @@ void Debugger::Draw(sf::RenderWindow& window)
 {
 	debugText.setString(debugString);
 	window.draw(debugText);
-	debugString="";
+	debugString=""; //clears the debugger after each loop to facilitate the addline method
 }
