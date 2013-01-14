@@ -5,21 +5,33 @@ class Monster :
 {
 public:
 	Monster(int level);
-	bool HandleEvents(sf::Event someEvent);
+	bool HandleEvents(const sf::Event & someEvent);
 	void Update();
 	void Draw();
 	void Show(bool b);
 	void Spawn(int row, int col);
-
-	//returns true if monster died from attack
-	bool Kill(int dmg);
+	void UnSpawn();
+	void Attack(int dmg);
 
 private:
-	bool attackable, isShowing;
-	void move();
+	std::vector<int> attackQueue;
+	//returns true if monster died from attack
+	bool Kill();
+	bool isSpawned, isMoving;
+	const sf::Vector2i FigureDirection();
+
+	//THREADED
+	bool Move(const sf::Vector2i& direction);
 	void Die();
 	int HP, speed, armor;
-	sf::Vector2f lastPos;
+
+	int level;
+
+	sf::Vector2i currentPos;
+	sf::Vector2i lastPos;
+
 	sf::CircleShape monsterShape;
+
+	sf::Clock moveTimer;
 };
 

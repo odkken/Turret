@@ -2,10 +2,10 @@
 #include "ClickableText.h"
 #include "Resources.h"
 #include "MyAlgorithms.h"
+#include "Debugger.h"
 
-ClickableText::ClickableText(const std::string& message, std::function<void()> func, int x, int y, const sf::Color& color) : text(message, Resources::Instance()->FontBank("Arial"), 30), OnClick(func)
+ClickableText::ClickableText(const std::string& message, std::function<void()> func, int x, int y) : text(message, Resources::Instance()->FontBank("Arial"), 30), OnClick(func), isShowing(true), isMousedOver(false)
 {
-	text.setColor(color);
 	SetPosition(x,y);
 }
 
@@ -18,14 +18,19 @@ bool ClickableText::HandleEvents(const sf::Event& someEvent)
 			OnClick();
 			return true;
 		}
-		if(someEvent.type==sf::Event::MouseMoved && MyAlgorithms::IsWithin(sf::Mouse::getPosition(Game::Instance()->mainWindow_), text))
+		if(MyAlgorithms::IsWithin(sf::Mouse::getPosition(Game::Instance()->mainWindow_), text)) //if your mouse is over the button
 		{
-			MouseOver(true);
-			return true;
+			if(!isMousedOver) //and you weren't already moused over
+			{
+				text.setColor(sf::Color::Red);
+				isMousedOver=true;
+			}
 		}
-		else
-			MouseOver(false);
-
+		else if(isMousedOver) //if you were moused over
+		{
+			text.setColor(sf::Color::White);
+			isMousedOver=false;
+		}
 		return false;
 
 	}
@@ -33,12 +38,7 @@ bool ClickableText::HandleEvents(const sf::Event& someEvent)
 
 void ClickableText::Update()
 {
-	if (MyAlgorithms::IsWithin(sf::Mouse::getPosition(Game::Instance()->mainWindow_), text))
-	{
-		MouseOver(true);
-	}
-
-	else MouseOver(false);
+	//isMousedOver ? text.setColor(sf::Color::Red) : text.setColor(sf::Color::White);
 }
 
 void ClickableText::Draw()
@@ -56,14 +56,16 @@ void ClickableText::SetPosition(float x, float y)
 
 void ClickableText::MouseOver(bool b)
 {
-	if (b)
-		text.setColor(sf::Color::Red);
-	else
-		text.setColor(sf::Color::White);
+	isMousedOver=b;
 }
 
 
 void ClickableText::Show(bool b)
 {
 	isShowing=b;
+}
+
+sf::Text& ClickableText::GetText()
+{
+	return text;
 }

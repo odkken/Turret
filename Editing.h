@@ -11,12 +11,13 @@ public:
 	void HandleEvents();
 	WorldMap& GetMap();
 	void Draw();
+	void Update();
 
 private:
 	Editing();
 	static Editing* instance_;
 	WorldMap map;
 	MapObject mouseObject;
-	ClickableText resetButton, saveButton;
+	std::vector<ClickableText> buttons;
 };
 

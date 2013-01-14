@@ -2,8 +2,9 @@
 #include "WorldMap.h"
 #include <fstream>
 #include "MyAlgorithms.h"
+#include <stdlib.h>
 
-WorldMap::WorldMap() : MAP_SIZE(20,20)
+WorldMap::WorldMap() : MAP_SIZE(20,20), MAP_DIMS(MAP_SIZE.x*MapObject::OBJECT_SIZE.x,MAP_SIZE.y*MapObject::OBJECT_SIZE.y)
 {
 	for (int row=0; row<MAP_SIZE.y; ++row)
 	{
@@ -40,7 +41,7 @@ void WorldMap::Save()
 	static int i=0;
 	i++;
 	std::ofstream saveFile;
-	saveFile.open("Maps/map" + std::to_string(i) + ".tm");
+	saveFile.open("Maps/map1.tm");
 
 	//this stores rows as continous numbers, but isn't an issue as long as there aren't more than 10 different mapobject types
 	for (auto& row : mapGrid)
@@ -71,6 +72,8 @@ const sf::Vector2f& WorldMap::ClosestNode(const sf::Vector2f& pos)
 
 MapObject::ObjectType WorldMap::GetType(int row, int col)
 {
+	if(row >= MAP_SIZE.y || row < 0 || col >= MAP_SIZE.x || col < 0)
+		return MapObject::ObjectType::empty;
 	return mapGrid[row][col].second.GetType();
 }
 
@@ -100,14 +103,14 @@ void WorldMap::Load(const std::string& fileName)
 	if (mapFile.is_open())
 	{
 		int i=0;
-		int j=0;
 		//read in a whole line
 		while(mapFile >> row)
 		{
-			//iterate through individual numbers in the line, reading them as a type and storing them to the corresponding node
-			for(int type : row)
+			int j=0;
+			//iterate through individual numbers in the line, reading them as chars then converting to ints, then to enum type
+			for(auto digit : row)
 			{
-				mapGrid[i][j].second.ChangeType(static_cast<MapObject::ObjectType>(type));
+				mapGrid[i][j].second.ChangeType(static_cast<MapObject::ObjectType>(atoi(&digit)));
 				++j;
 			}
 			++i;
@@ -115,4 +118,16 @@ void WorldMap::Load(const std::string& fileName)
 	}
 	else std::cout<<"Couldn't open map."<<std::endl;
 
+	mapFile.close();
+
+}
+
+//returns as x, y
+const sf::Vector2i WorldMap::GetSpawn()
+{
+	for(auto& row : mapGrid)
+		for(auto& col : row)
+			if(col.second.GetType()==MapObject::ObjectType::spawn)
+				return sf::Vector2i(&col-&row[0], &row-&mapGrid[0]);
+	return sf::Vector2i(0,0);
 }

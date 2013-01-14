@@ -2,10 +2,10 @@
 #include "Game.h"
 #include "Editing.h"
 #include "Debugger.h"
-
+#include "Playing.h"
 Game::Game() : mainWindow_(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "RPG"), level_(0), debug(false)
 {
-	state_ = Editing::Instance();
+	state_ = Playing::Instance();
 }
 
 Game* Game::instance_ = 0;
